@@ -11,6 +11,9 @@ a {text-decoration:none}
 table {border-collapse:collapse;border-spacing:0}
 ul {list-style: none;}
 li {display:inline-block;}
+input:focus, select:focus, option:focus, textarea:focus, button:focus{
+	outline: none;
+}
 
 /*
   layout
@@ -21,7 +24,7 @@ div.wrap {
   background:#FFF;
   padding:10px;
   font-size:12px;
-  > textarea.code {
+  > pre.code {
     width:100%;
     height:325px;
     overflow:auto;
@@ -30,6 +33,7 @@ div.wrap {
     padding:10px;
     border-radius:4px;
     margin-bottom:10px;
+    resize:none;
   }
   button {
     width:100%;

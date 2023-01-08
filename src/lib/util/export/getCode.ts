@@ -1,16 +1,16 @@
-import { componentList } from "../data/componentList";
+import { componentList } from "../../data/componentList";
 import getComponent from "./getComponent";
 
 export const getCode = (node, depth = 0) => {
-  let nl = depth > 0 ? `\n`:``;
+  const nl = depth > 0 ? `\n`:``;
   let name = node.name;
 
   //행열 처리
   if(node.parent.name === 'columns') {
     name = `column ${name}`;
   }
-  let res: string = '';
-  let res_end: string = '';
+  let res = '';
+  let res_end = '';
   let childSearch = true;
   
   
