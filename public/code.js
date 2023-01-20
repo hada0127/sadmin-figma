@@ -1,12 +1,16 @@
 'use strict';
 
 const componentList = [
-    { name: 'table', type: 'INSTANCE', exeType: 'table' },
-    { name: 'thead', type: 'INSTANCE', exeType: 'table' },
-    { name: 'tbody', type: 'INSTANCE', exeType: 'table' },
-    { name: 'tr', type: 'INSTANCE', exeType: 'table' },
-    { name: 'th', type: 'INSTANCE', exeType: 'table' },
-    { name: 'td', type: 'INSTANCE', exeType: 'table' },
+    { name: 'table', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'thead', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'tbody', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'tr', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'th', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'td', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'section', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'article', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'h1', type: 'INSTANCE', exeType: 'tag' },
+    { name: 'h2', type: 'INSTANCE', exeType: 'tag' },
     { type: 'TEXT', exeType: 'text' },
     { type: 'COMPONENT', exeType: 'component' },
 ];
@@ -27,7 +31,10 @@ function getComponent(node, depth) {
         let label = '';
         let guideText = '';
         let fieldClass = '';
-        if (name === 'Button') { // Button
+        if (['Gnb', 'Lnb', 'Titlebar'].includes(name)) { // Gnb, Lnb, Titlebar
+            res_component = `<${name} />`;
+        } // Gnb, Lnb, Titlebar
+        else if (name === 'Button') { // Button
             const color = node.componentProperties.class.value;
             const style = node.componentProperties.style.value;
             let inputClass = color === 'basic' ? '' : ` ${color}`;
@@ -35,7 +42,6 @@ function getComponent(node, depth) {
             let value = '';
             let iconLeft = '';
             let iconRight = '';
-            console.log(node.componentProperties);
             for (const child of node.children) {
                 if (child.name === 'button') {
                     value = child.characters;
@@ -51,6 +57,23 @@ function getComponent(node, depth) {
             prop = `${iconLeft}${iconRight}${inputClass}`;
             res_component = `<${name}${prop}>${value}</${name}>`;
         } // Button
+        else if (name === 'Tabs' || name === 'Tabs-is-boxed') { // Tabs
+            const tabsArr = new Array();
+            for (const child of node.children) {
+                if (child.visible === true) {
+                    let obj = new Object();
+                    let text = child.children[0].characters;
+                    let checked = child.componentProperties.checked.value;
+                    obj['name'] = text;
+                    if (checked === 'true') {
+                        obj['checked'] = true;
+                    }
+                    tabsArr.push(obj);
+                }
+            }
+            prop = name === 'Tabs-is-boxed' ? ` class="is-boxed"` : '';
+            res_component = `<Tabs tabs={${JSON.stringify(tabsArr)}}${prop} />`;
+        } // Tabs
         else { // Components with Field 
             for (const child of node.children) {
                 if (child.visible === true) {
@@ -120,18 +143,73 @@ function getComponent(node, depth) {
                         res_component += `\n` + `  `.repeat(depth + 2) + `<option>${value}</option>`;
                         res_component += `\n` + `  `.repeat(depth + 1) + `</${name}>`;
                     } // Select
-                    else if (child.name === 'toggle-class') { // Toggle
+                    else if (child.name === 'select-multiple-class') { // Select-multiple
+                        prop = child.name === 'select-multiple-class' ? ` multiple size="5"` : '';
+                        res_component = `<${name.split('-')[0]} ${prop}>`;
+                        res_component += `\n` + `  `.repeat(depth + 2) + `<option>Sample</option>`;
+                        res_component += `\n` + `  `.repeat(depth + 1) + `</${name.split('-')[0]}>`;
+                    } // Select-multiple
+                    else if (child.name === 'textarea-class') { // Textarea
                         const color = child.componentProperties.class.value;
+                        let placeholder = child.children[0].characters;
                         prop = color === 'basic' ? '' : ` class="${color}"`;
-                        res_component = `<${name} ${prop} />`;
+                        placeholder = placeholder.length > 0 ? ` placeholder="${placeholder.trim()}"` : '';
+                        res_component = `<${name}${placeholder}${prop} />`;
+                    } // Textarea
+                    else if (child.name === 'editor-class') { // Editor
+                        let placeholder = child.children[0].children[1].characters;
+                        placeholder = placeholder.length > 0 ? ` placeholder="${placeholder.trim()}"` : '';
+                        res_component = `<${name}${placeholder} />`;
+                    } // Editor
+                    else if (child.name === 'toggle-class' || child.name === 'file-class' || child.name === 'file-is-boxed-class') { // Toggle, File
+                        const color = child.componentProperties.class.value;
+                        const isBoxed = child.name === 'file-is-boxed-class' ? ' is-boxed' : '';
+                        prop = color === 'basic' ? '' : ` class="${color}${isBoxed}"`;
+                        res_component = `<${name.split('-')[0]}${prop} />`;
+                    } // Toggle, File
+                    else if (child.name === 'radio-class' || child.name === 'checkbox-class') { // Radio, Checkbox
+                        let nl = '';
+                        for (const childDepth2 of child.children) {
+                            if (childDepth2.visible === true) {
+                                let checked = childDepth2.componentProperties.State.value;
+                                checked = checked === 'checked' ? ' checked' : '';
+                                res_component += nl + `<label>`;
+                                res_component += `\n` + `  `.repeat(depth + 2) + `<input type="${child.name.split('-')[0]}"${checked}>`;
+                                res_component += `\n` + `  `.repeat(depth + 2) + childDepth2.children[0].children[1].characters;
+                                res_component += `\n` + `  `.repeat(depth + 1) + `</lable>`;
+                                nl = `\n` + `  `.repeat(depth + 1);
+                            }
+                        }
+                    } // Radio, Checkbox
+                    else if (child.name === 'date-class') { // Date
+                        const color = child.componentProperties.class.value;
+                        let inputClass = color === 'basic' ? '' : ` ${color}`;
+                        let value = '';
+                        let iconLeft = '';
+                        let iconRight = '';
+                        for (const childDepth2 of child.children[0].children) {
+                            if (childDepth2.name === 'text') {
+                                value = childDepth2.characters;
+                            }
+                            else if (childDepth2.visible && childDepth2.name === 'iconLeft') {
+                                iconLeft = ` iconLeft="${childDepth2.componentProperties.select.value}"`;
+                            }
+                        }
+                        value = value.length > 0 ? ` value="${value.trim()}"` : '';
+                        inputClass = inputClass.length > 0 ? ` class="${inputClass.trim()}"` : '';
+                        prop = `${value}${iconLeft}${iconRight}${inputClass}`;
+                        res_component = `<${name}${prop} />`;
+                    } // Date
+                    else {
+                        console.log(node.name, child.name, child);
+                        res_component = `<${name} />`;
                     }
                 } // vidible
-                console.log(res_component);
             } // child loop
+            res_start += nl + `  `.repeat(depth) + `<Field${label}${guideText}${fieldClass}>`;
+            res_end += `\n` + `  `.repeat(depth) + `</Field>`;
+            depth++;
         }
-        res_start += nl + `  `.repeat(depth) + `<Field${label}${guideText}${fieldClass}>`;
-        res_end += `\n` + `  `.repeat(depth) + `</Field>`;
-        depth++;
     }
     res = `${res_start}`;
     res += `\n` + `  `.repeat(depth) + res_component;
@@ -154,7 +232,7 @@ const getCode = (node, depth = 0) => {
         res = nl + `  `.repeat(depth) + node.characters;
         childSearch = false;
     }
-    else if (((_b = componentList.filter((el) => el.name === node.name)[0]) === null || _b === void 0 ? void 0 : _b.exeType) === 'table') { //table
+    else if (((_b = componentList.filter((el) => el.name === node.name)[0]) === null || _b === void 0 ? void 0 : _b.exeType) === 'tag') { //tag
         res = nl + `  `.repeat(depth) + `<${name}>`;
         res_end += `\n` + `  `.repeat(depth) + `</${name}>`;
     }

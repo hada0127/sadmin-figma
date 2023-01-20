@@ -17,7 +17,7 @@ export const getCode = (node, depth = 0) => {
   if(componentList.filter((el) => el.type === node.type)[0]?.exeType === 'text'){ //TextNode
     res = nl + `  `.repeat(depth) + node.characters;
     childSearch = false;
-  } else if(componentList.filter((el) => el.name === node.name)[0]?.exeType === 'table') { //table
+  } else if(componentList.filter((el) => el.name === node.name)[0]?.exeType === 'tag') { //tag
     res = nl + `  `.repeat(depth) + `<${name}>`;
     res_end += `\n`+ `  `.repeat(depth) + `</${name}>`;
   } else if(componentList.filter((el) => el.type === node.type)[0]?.exeType === 'component' || componentList.filter((el) => el.type === node.masterComponent?.type)[0]?.exeType === 'component') { //Component
