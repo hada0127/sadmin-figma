@@ -1,160 +1,87 @@
-<div class="is-bordered">
-  <div class="columns">
-    <div class="is-12">
-      <div class="input">
-        <div class="Label">
-          <div class="Title" />
-          <div class="*" />
-        </div>
-        <div class="input-class">
-          <div class="prefix icon">
-            <div class="Vector" />
+<div class="container">
+  <Lnb />
+  <div class="contents">
+    <Titlebar />
+    <article>
+      <div class="SearchBox">
+        <div class="columns">
+          <div class="column is-3">
+            <Field label="City" required memo="Guide text">
+              <Select>
+                <option>Text</option>
+              </Select>
+            </Field>
           </div>
-          <div class="text" />
-          <div class="suffix icon">
-            <div class="Vector" />
+          <div class="column is-3">
+            <Field label="Keyword">
+              <Input placeholder="Placeholder" />
+            </Field>
           </div>
+          <div class="column is-3">
+            <Field label="Reservation">
+              <label>
+                <input type="radio" checked />
+                Available
+              </label>
+              <label>
+                <input type="radio" />
+                Unavailable
+              </label>
+            </Field>
+          </div>
+          <div class="column is-3" />
         </div>
-        <div class="Guide text">
-          <div class="Guide text" />
+        <div class="button">
+          <Button />
+          <Button class="is-primary">Search</Button>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="is-3">
-      <div class="input">
-        <div class="Label">
-          <div class="Title" />
-          <div class="*" />
-        </div>
-        <div class="input-class">
-          <div class="prefix icon">
-            <div class="Vector" />
-          </div>
-          <div class="text" />
-          <div class="suffix icon">
-            <div class="Vector" />
-          </div>
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-    <div class="is-3">
-      <div class="Select">
-        <div class="Label">
-          <div class="Title" />
-        </div>
-        <div class="Select-class">
-          <div class="prefix icon">
-            <div class="Vector" />
-          </div>
-          <div class="Seoul" />
-          <div class="suffix icon">
-            <div class="Vector" />
-          </div>
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-    <div class="is-3">
-      <div class="input">
-        <div class="Label">
-          <div class="Title" />
-        </div>
-        <div class="input-class">
-          <div class="prefix icon">
-            <div class="Vector" />
-          </div>
-          <div class="text" />
-          <div class="suffix icon">
-            <div class="Vector" />
-          </div>
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-    <div class="is-3">
-      <div class="Toggle">
-        <div class="Label">
-          <div class="Title" />
-        </div>
-        <div class="toggle-class">
-          <div class="Ellipse 1" />
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="is-12">
-      <div class="editor">
-        <div class="Label">
-          <div class="Title" />
-          <div class="*" />
-        </div>
-        <div class="editor-class">
-          <div class="Frame 13">
-            <div class="toolbar">
-              <div class="image 1" />
-            </div>
-            <div class="Description" />
-          </div>
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="columns">
-    <div class="is-3">
-      <div class="input">
-        <div class="Label">
-          <div class="Title" />
-        </div>
-        <div class="input-class">
-          <div class="prefix icon">
-            <div class="Vector" />
-          </div>
-          <div class="text" />
-          <div class="suffix icon">
-            <div class="Vector" />
-          </div>
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-    <div class="is-3">
-      <div class="input">
-        <div class="Label">
-          <div class="Title" />
-        </div>
-        <div class="input-class">
-          <div class="prefix icon">
-            <div class="Vector" />
-          </div>
-          <div class="text" />
-          <div class="suffix icon">
-            <div class="Vector" />
-          </div>
-        </div>
-        <div class="Guide text">
-          <div class="Guide text" />
-        </div>
-      </div>
-    </div>
-    <div class="is-3" />
-    <div class="is-3" />
+      <table>
+        <thead>
+          <tr>
+            <th> No </th>
+            <th> Title </th>
+            <th> Name </th>
+            <th> Regist Date </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td> 1 </td>
+            <td> Text </td>
+            <td> name </td>
+            <td> 2023-01-01 </td>
+          </tr>
+          <tr>
+            <td> 2 </td>
+            <td> Text </td>
+            <td> name </td>
+            <td> 2023-01-01 </td>
+          </tr>
+          <tr>
+            <td> 3 </td>
+            <td> Text </td>
+            <td> name </td>
+            <td> 2023-01-01 </td>
+          </tr>
+          <tr>
+            <td> 4 </td>
+            <td> Text </td>
+            <td> name </td>
+            <td> 2023-01-01 </td>
+          </tr>
+          <tr>
+            <td> 5 </td>
+            <td> Text </td>
+            <td> name </td>
+            <td> 2023-01-01 </td>
+          </tr>
+        </tbody>
+      </table>
+      <Field>
+        <Pagination />
+      </Field>
+    </article>
   </div>
 </div>
+Get Code

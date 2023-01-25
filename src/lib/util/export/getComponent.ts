@@ -39,12 +39,12 @@ export default function getComponent(node:any, depth:number) {
       res_component = `<${name}${prop}>${value}</${name}>`;
     } // Button
     else if(name === 'Tabs' || name === 'Tabs-is-boxed') { // Tabs
-      const tabsArr = new Array();
+      const tabsArr = [];
       for(const child of node.children) {
         if(child.visible === true){
-          let obj = new Object();
-          let text = child.children[0].characters;
-          let checked = child.componentProperties.checked.value;
+          const obj = new Object();
+          const text = child.children[0].characters;
+          const checked = child.componentProperties.checked.value;
           obj['name'] = text;
           if(checked === 'true'){
             obj['checked'] = true;
@@ -156,7 +156,7 @@ export default function getComponent(node:any, depth:number) {
                 res_component += nl + `<label>`;
                 res_component += `\n` + `  `.repeat(depth+2) + `<input type="${child.name.split('-')[0]}"${checked}>`;
                 res_component += `\n` + `  `.repeat(depth+2) + childDepth2.children[0].children[1].characters;
-                res_component += `\n` + `  `.repeat(depth+1) + `</lable>`;  
+                res_component += `\n` + `  `.repeat(depth+1) + `</label>`;  
                 nl = `\n` + `  `.repeat(depth+1);
               }
             }
@@ -166,7 +166,6 @@ export default function getComponent(node:any, depth:number) {
             let inputClass = color === 'basic' ? '':` ${color}`;
             let value = '';
             let iconLeft = '';
-            let iconRight = '';
             for(const childDepth2 of child.children[0].children) {
               if(childDepth2.name === 'text') {
                 value = childDepth2.characters;
@@ -177,7 +176,7 @@ export default function getComponent(node:any, depth:number) {
             }
             value = value.length > 0 ? ` value="${value.trim()}"`:'';
             inputClass = inputClass.length > 0 ? ` class="${inputClass.trim()}"`:'';
-            prop = `${value}${iconLeft}${iconRight}${inputClass}`;
+            prop = `${value}${iconLeft}${inputClass}`;
 
             res_component = `<${name}${prop} />`;
           } // Date
