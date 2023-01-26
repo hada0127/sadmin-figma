@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte';
-  export let pageMove = false;
   export let tabs = [];
   export let inheritsClass = $$props.class ? $$props.class : '';
 
@@ -8,7 +7,7 @@
 
   const setTabs = (selectTab) => {
     nowTab = selectTab;
-    document.querySelectorAll(`#tab div:not(.tabs)`).forEach((el, i) => {
+    document.querySelectorAll(`#tab > div:not(.tabs)`).forEach((el, i) => {
       if (i === selectTab) {
         el.classList.add('is-visible');
       } else {
@@ -44,7 +43,5 @@
       {/each}
     </ul>
   </div>
-  {#if pageMove === false}
-    <slot />
-  {/if}
+  <slot />
 </div>

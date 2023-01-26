@@ -1,22 +1,17 @@
 import { getCode } from './lib/util/export/getCode';
+import { addPage } from './lib/util/wireframe/addPage';
+import { drawGrid, getInfo } from './lib/util/wireframe/drawGrid';
 
 figma.showUI(__html__, {themeColors: true, width: 300, height: 400});
 
 figma.ui.onmessage = msg => {
 	if (msg.type === 'getCode') {
-		let data = '';
-		let flag = 'fail';
-		if(figma.currentPage.selection.length > 0){
-			for(const node of figma.currentPage.selection){
-				data += getCode(node);
-			}	
-			flag = 'success';
-		}
-		const res = {
-			action: 'getCode',
-			flag: flag,
-			data: data
-		};
-		figma.ui.postMessage(res);
+		getCode(msg);
+	} else if(msg.type === 'addPage'){
+		addPage(msg);
+	} else if(msg.type === 'drawGrid'){
+		drawGrid(msg, msg.data);
+	} else if(msg.type === 'getInfo'){
+		getInfo(msg);
 	}
 };

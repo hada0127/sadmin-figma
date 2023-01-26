@@ -1,7 +1,7 @@
 import { componentList } from "../../data/componentList";
 import getComponent from "./getComponent";
 
-export const getCode = (node, depth = 0) => {
+const get = (node, depth = 0) => {
   const nl = depth > 0 ? `\n`:``;
   let name = node.name;
 
@@ -31,10 +31,30 @@ export const getCode = (node, depth = 0) => {
   //text나 component가 아니면 하위 탐색
   if(childSearch && node.children && node.children?.length > 0) {
     for(const child of node.children) {
-      res += getCode(child, depth+1);
+      res += get(child, depth+1);
     }
   }
   res += res_end;
   
   return res;
+}
+
+export const getCode = (msg) => {
+  let data = '';
+  let flag = 'fail';
+  let message = 'Please select Object';
+  if(figma.currentPage.selection.length > 0){
+    for(const node of figma.currentPage.selection){
+      data += get(node);
+    }	
+    flag = 'success';
+    message = '';
+  }
+  const res = {
+    action: 'getCode',
+    flag: flag,
+    message: message,
+    data: data
+  };
+  figma.ui.postMessage(res);
 }

@@ -14,6 +14,7 @@ const componentList = [
     { type: 'TEXT', exeType: 'text' },
     { type: 'COMPONENT', exeType: 'component' },
 ];
+//# sourceMappingURL=componentList.js.map
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getComponent(node, depth) {
@@ -214,8 +215,9 @@ function getComponent(node, depth) {
     res += `${res_end}`;
     return res;
 }
+//# sourceMappingURL=getComponent.js.map
 
-const getCode = (node, depth = 0) => {
+const get = (node, depth = 0) => {
     var _a, _b, _c, _d, _e;
     const nl = depth > 0 ? `\n` : ``;
     let name = node.name;
@@ -245,29 +247,132 @@ const getCode = (node, depth = 0) => {
     //text나 component가 아니면 하위 탐색
     if (childSearch && node.children && ((_e = node.children) === null || _e === void 0 ? void 0 : _e.length) > 0) {
         for (const child of node.children) {
-            res += getCode(child, depth + 1);
+            res += get(child, depth + 1);
         }
     }
     res += res_end;
     return res;
 };
+const getCode = (msg) => {
+    let data = '';
+    let flag = 'fail';
+    let message = 'Please select Object';
+    if (figma.currentPage.selection.length > 0) {
+        for (const node of figma.currentPage.selection) {
+            data += get(node);
+        }
+        flag = 'success';
+        message = '';
+    }
+    const res = {
+        action: 'getCode',
+        flag: flag,
+        message: message,
+        data: data
+    };
+    figma.ui.postMessage(res);
+};
+//# sourceMappingURL=getCode.js.map
+
+const get$1 = () => {
+    const componentPage = figma.root.children.find(el => el.name === '_component');
+    const pageFrame = componentPage === null || componentPage === void 0 ? void 0 : componentPage.children.find(el => el.name === '_page');
+    const page = figma.currentPage;
+    if (componentPage === undefined) {
+        return { flag: 'errPage', message: 'Can not find _component Page' };
+    }
+    else if (pageFrame === undefined) {
+        return { flag: 'errFrame', message: 'Can not find _page frame' };
+    }
+    const instance = pageFrame.clone();
+    figma.currentPage.appendChild(instance);
+    if (page.children.length > 1) {
+        const lastChild = page.children.length - 2;
+        instance.x = page.children[lastChild].x + page.children[lastChild].width + 100;
+    }
+    return { flag: 'success', message: '' };
+};
+const addPage = (msg) => {
+    const { flag, message } = get$1();
+    const res = {
+        action: 'addPage',
+        flag: flag,
+        message: message
+    };
+    figma.ui.postMessage(res);
+};
+//# sourceMappingURL=addPage.js.map
+
+const draw = (rule) => {
+    const selectedObject = figma.currentPage.selection;
+    if (!Array.isArray(rule)) {
+        return { flag: 'errArray', message: 'Data is not Array' };
+    }
+    const sum = rule.reduce((a, b) => a + b, 0);
+    if (sum !== 12) {
+        return { flag: 'errSum', message: 'The sum of the grid numbers must be 12' };
+    }
+    if (selectedObject.length === 0) {
+        return { flag: 'errSelect', message: 'Please select object' };
+    }
+    if (selectedObject[0].type !== 'FRAME') {
+        return { flag: 'errFrame', message: 'Please select frame' };
+    }
+    const frame = figma.createFrame();
+    frame.name = 'columns';
+    frame.clipsContent = true;
+    frame.primaryAxisSizingMode = "FIXED";
+    frame.primaryAxisAlignItems = "MIN";
+    frame.layoutMode = "HORIZONTAL";
+    frame.layoutPositioning = "AUTO";
+    frame.layoutAlign = "STRETCH";
+    frame.layoutGrow = 0;
+    frame.counterAxisAlignItems = "MIN";
+    frame.counterAxisSizingMode = "AUTO";
+    frame.itemSpacing = 10;
+    frame.paddingTop = 10;
+    frame.paddingBottom = 10;
+    frame.verticalPadding = 10;
+    selectedObject[0].appendChild(frame);
+    return { flag: 'success', message: '' };
+    //  figma.currentPage.appendChild(instance);
+    // if (page.children.length > 1) {
+    // 	const lastChild = page.children.length - 2;
+    // 	instance.x = page.children[lastChild].x + page.children[lastChild].width + 100;
+    // }
+};
+const drawGrid = (msg, rule) => {
+    const { flag, message } = draw(rule);
+    const res = {
+        action: 'drawGrid',
+        flag: flag,
+        message: message
+    };
+    figma.ui.postMessage(res);
+};
+const getInfo = (msg) => {
+    const selectedObject = figma.currentPage.selection;
+    console.log(selectedObject[0]);
+    const res = {
+        action: 'getInfo',
+        flag: 'success'
+    };
+    figma.ui.postMessage(res);
+};
 
 figma.showUI(__html__, { themeColors: true, width: 300, height: 400 });
 figma.ui.onmessage = msg => {
     if (msg.type === 'getCode') {
-        let data = '';
-        let flag = 'fail';
-        if (figma.currentPage.selection.length > 0) {
-            for (const node of figma.currentPage.selection) {
-                data += getCode(node);
-            }
-            flag = 'success';
-        }
-        const res = {
-            action: 'getCode',
-            flag: flag,
-            data: data
-        };
-        figma.ui.postMessage(res);
+        getCode();
+    }
+    else if (msg.type === 'addPage') {
+        addPage();
+    }
+    else if (msg.type === 'drawGrid') {
+        drawGrid(msg, msg.data);
+    }
+    else if (msg.type === 'getInfo') {
+        getInfo();
     }
 };
+//# sourceMappingURL=code.js.map
