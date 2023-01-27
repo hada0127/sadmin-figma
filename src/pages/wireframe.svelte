@@ -27,6 +27,12 @@
     <dd class:is-visible={nowAccordion === 1}>
       <button on:click={() => send('drawGrid', [12])}>[1]</button>
       <button on:click={() => send('drawGrid', [6, 6])}>[1:1]</button>
+      <button on:click={() => send('drawGrid', [4, 4, 4])}>[1:1:1]</button>
+      <button on:click={() => send('drawGrid', [8, 4])}>[2:1]</button>
+      <button on:click={() => send('drawGrid', [4, 8])}>[1:2]</button>
+      <button on:click={() => send('drawGrid', [3, 3, 3, 3])}>[1:1:1:1]</button>
+      <button on:click={() => send('drawGrid', [9, 3])}>[3:1]</button>
+      <button on:click={() => send('drawGrid', [3, 9])}>[1:3]</button>
       <button on:click={() => send('getInfo')}>[Info]</button>
     </dd>
     <dh>
