@@ -1,5 +1,5 @@
 /node_modules/
-/public/build/
+public/code.js
 public/index.html
 src/build
 .DS_Store
