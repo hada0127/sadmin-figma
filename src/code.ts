@@ -1,6 +1,8 @@
 import { getCode } from './lib/util/export/getCode';
 import { addPage } from './lib/util/wireframe/addPage';
-import { drawGrid, getInfo } from './lib/util/wireframe/drawGrid';
+import { drawGrid } from './lib/util/wireframe/drawGrid';
+import { getInfo } from './lib/util/wireframe/getInfo';
+import { addComponents } from './lib/util/wireframe/addComponents';
 
 figma.showUI(__html__, {themeColors: true, width: 300, height: 400});
 
@@ -13,5 +15,7 @@ figma.ui.onmessage = msg => {
 		drawGrid(msg, msg.data);
 	} else if(msg.type === 'getInfo'){
 		getInfo(msg);
+	} else if(msg.type === 'addComponents'){
+		addComponents(msg, msg.data);
 	}
 };

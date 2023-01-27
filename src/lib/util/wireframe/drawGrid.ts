@@ -14,6 +14,16 @@ const draw = (rule) => {
   if(selectedObject[0].type !== 'FRAME') {
     return {flag:'errFrame', message:'Please select frame'};
   }
+  let prevSize = rule[0];
+  let sameSizeCheck = true;
+  for(const obj of rule) {
+    if(prevSize !== obj) {
+      sameSizeCheck = false;
+      break;
+    } else {
+      prevSize = obj;
+    }
+  }
 
   const frame = figma.createFrame();
   frame.name = 'columns';
@@ -31,15 +41,34 @@ const draw = (rule) => {
   frame.paddingBottom = 10;
   frame.verticalPadding = 10;
 
+  for(const obj of rule) {
+    const subFrame = figma.createFrame();
+    subFrame.name = `is-${obj}`;
+    if(sameSizeCheck === true) {
+      //auto width
+      subFrame.resize(subFrame.width, 30);
+      subFrame.layoutGrow = 1;
+    } else {
+      //fixed width
+      const width = selectedObject[0].width * obj / 12;
+      console.log(width);
+      subFrame.resize(width, 30);
+      subFrame.layoutGrow = 0;
+    }
+    subFrame.clipsContent = true;
+    subFrame.primaryAxisSizingMode = "FIXED";
+    subFrame.primaryAxisAlignItems = "MIN";
+    subFrame.layoutMode = "HORIZONTAL";
+    subFrame.layoutPositioning = "AUTO";
+    subFrame.layoutAlign = "INHERIT";
+    subFrame.counterAxisAlignItems = "MIN";
+    subFrame.counterAxisSizingMode = "AUTO";
+    subFrame.itemSpacing = 10;
+    frame.appendChild(subFrame);
+  }
+
   selectedObject[0].appendChild(frame);
   return {flag:'success', message:''};
-
-//  figma.currentPage.appendChild(instance);
-
-  // if (page.children.length > 1) {
-	// 	const lastChild = page.children.length - 2;
-	// 	instance.x = page.children[lastChild].x + page.children[lastChild].width + 100;
-	// }
 }
 
 export const drawGrid = (msg, rule) => {
@@ -48,15 +77,6 @@ export const drawGrid = (msg, rule) => {
     action: 'drawGrid',
     flag: flag,
     message: message
-  };
-  figma.ui.postMessage(res);
-}
-export const getInfo = (msg) => {
-  const selectedObject = figma.currentPage.selection;
-  console.log(selectedObject[0]);
-  const res = {
-    action: 'getInfo',
-    flag: 'success'
   };
   figma.ui.postMessage(res);
 }

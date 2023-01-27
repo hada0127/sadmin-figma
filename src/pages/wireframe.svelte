@@ -1,5 +1,5 @@
 <script>
-  let nowAccordion = 1;
+  let nowAccordion = 2;
   const send = (message, data = null) => {
     parent.postMessage({ pluginMessage: { type: message, data } }, '*');
   };
@@ -33,7 +33,6 @@
       <button on:click={() => send('drawGrid', [3, 3, 3, 3])}>[1:1:1:1]</button>
       <button on:click={() => send('drawGrid', [9, 3])}>[3:1]</button>
       <button on:click={() => send('drawGrid', [3, 9])}>[1:3]</button>
-      <button on:click={() => send('getInfo')}>[Info]</button>
     </dd>
     <dh>
       <button
@@ -42,8 +41,22 @@
         }}>Components</button
       >
     </dh>
-    <dd class:is-visible={nowAccordion === 2}>345</dd>
+    <dd class:is-visible={nowAccordion === 2}>
+      <button on:click={() => send('addComponents', 'Input')}>[input]</button>
+      <button on:click={() => send('addComponents', 'Checkbox')}>[checkbox]</button>
+      <button on:click={() => send('addComponents', 'Radio')}>[radio]</button>
+      <button on:click={() => send('addComponents', 'Toggle')}>[toggle]</button>
+      <button on:click={() => send('addComponents', 'Select')}>[select]</button>
+      <button on:click={() => send('addComponents', 'Date')}>[date]</button>
+      <button on:click={() => send('addComponents', 'Textarea')}>[textarea]</button>
+      <button on:click={() => send('addComponents', 'Editor')}>[editor]</button>
+      <button on:click={() => send('addComponents', 'File')}>[file]</button>
+      <button on:click={() => send('addComponents', 'Button')}>[button]</button>
+      <button on:click={() => send('addComponents', 'Tabs')}>[tabs]</button>
+    </dd>
   </dl>
+
+  <button on:click={() => send('getInfo')}>[Info]</button>
 </div>
 
 <style>

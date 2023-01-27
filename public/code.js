@@ -318,6 +318,17 @@ const draw = (rule) => {
     if (selectedObject[0].type !== 'FRAME') {
         return { flag: 'errFrame', message: 'Please select frame' };
     }
+    let prevSize = rule[0];
+    let sameSizeCheck = true;
+    for (const obj of rule) {
+        if (prevSize !== obj) {
+            sameSizeCheck = false;
+            break;
+        }
+        else {
+            prevSize = obj;
+        }
+    }
     const frame = figma.createFrame();
     frame.name = 'columns';
     frame.clipsContent = true;
@@ -333,13 +344,34 @@ const draw = (rule) => {
     frame.paddingTop = 10;
     frame.paddingBottom = 10;
     frame.verticalPadding = 10;
+    for (const obj of rule) {
+        const subFrame = figma.createFrame();
+        subFrame.name = `is-${obj}`;
+        if (sameSizeCheck === true) {
+            //auto width
+            subFrame.resize(subFrame.width, 30);
+            subFrame.layoutGrow = 1;
+        }
+        else {
+            //fixed width
+            const width = selectedObject[0].width * obj / 12;
+            console.log(width);
+            subFrame.resize(width, 30);
+            subFrame.layoutGrow = 0;
+        }
+        subFrame.clipsContent = true;
+        subFrame.primaryAxisSizingMode = "FIXED";
+        subFrame.primaryAxisAlignItems = "MIN";
+        subFrame.layoutMode = "HORIZONTAL";
+        subFrame.layoutPositioning = "AUTO";
+        subFrame.layoutAlign = "INHERIT";
+        subFrame.counterAxisAlignItems = "MIN";
+        subFrame.counterAxisSizingMode = "AUTO";
+        subFrame.itemSpacing = 10;
+        frame.appendChild(subFrame);
+    }
     selectedObject[0].appendChild(frame);
     return { flag: 'success', message: '' };
-    //  figma.currentPage.appendChild(instance);
-    // if (page.children.length > 1) {
-    // 	const lastChild = page.children.length - 2;
-    // 	instance.x = page.children[lastChild].x + page.children[lastChild].width + 100;
-    // }
 };
 const drawGrid = (msg, rule) => {
     const { flag, message } = draw(rule);
@@ -350,12 +382,60 @@ const drawGrid = (msg, rule) => {
     };
     figma.ui.postMessage(res);
 };
+//# sourceMappingURL=drawGrid.js.map
+
 const getInfo = (msg) => {
     const selectedObject = figma.currentPage.selection;
     console.log(selectedObject[0]);
     const res = {
         action: 'getInfo',
         flag: 'success'
+    };
+    figma.ui.postMessage(res);
+};
+//# sourceMappingURL=getInfo.js.map
+
+const get$2 = (name) => {
+    const selectedObject = figma.currentPage.selection;
+    const componentPage = figma.root.children.find(el => el.name === '_component');
+    const pageFrame = componentPage === null || componentPage === void 0 ? void 0 : componentPage.children.find(el => el.name === '_component');
+    const baseComponent = pageFrame === null || pageFrame === void 0 ? void 0 : pageFrame.children.find(el => el.name === name);
+    if (selectedObject.length === 0) {
+        return { flag: 'errSelect', message: 'Please select object' };
+    }
+    else if (selectedObject[0].type !== 'FRAME') {
+        return { flag: 'errFrame', message: 'Please select frame' };
+    }
+    else if (componentPage === undefined) {
+        return { flag: 'errPage', message: 'Can not find _component Page' };
+    }
+    else if (pageFrame === undefined) {
+        return { flag: 'errFrame', message: 'Can not find _component frame' };
+    }
+    else if (baseComponent === undefined) {
+        return { flag: 'errComponent', message: 'Can not find Component' };
+    }
+    let instance;
+    if (name === 'Button') {
+        instance = baseComponent.clone();
+    }
+    else {
+        instance = baseComponent.createInstance();
+    }
+    selectedObject[0].appendChild(instance);
+    // if (page.children.length > 1) {
+    // 	const lastChild = page.children.length - 2;
+    // 	instance.x = page.children[lastChild].x + page.children[lastChild].width + 100;
+    // }
+    console.log(baseComponent, name);
+    return { flag: 'success', message: '' };
+};
+const addComponents = (msg, name) => {
+    const { flag, message } = get$2(name);
+    const res = {
+        action: 'addPage',
+        flag: flag,
+        message: message
     };
     figma.ui.postMessage(res);
 };
@@ -373,6 +453,9 @@ figma.ui.onmessage = msg => {
     }
     else if (msg.type === 'getInfo') {
         getInfo();
+    }
+    else if (msg.type === 'addComponents') {
+        addComponents(msg, msg.data);
     }
 };
 //# sourceMappingURL=code.js.map
