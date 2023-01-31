@@ -33,6 +33,9 @@
       <button on:click={() => send('drawGrid', [3, 3, 3, 3])}>[1:1:1:1]</button>
       <button on:click={() => send('drawGrid', [9, 3])}>[3:1]</button>
       <button on:click={() => send('drawGrid', [3, 9])}>[1:3]</button>
+      <button on:click={() => send('drawGrid', [2, 2, 2, 2, 2, 2])}>[1:1:1:1:1:1]</button>
+      <button on:click={() => send('drawGrid', [10, 2])}>[5:1]</button>
+      <button on:click={() => send('drawGrid', [2, 10])}>[1:5]</button>
     </dd>
     <dh>
       <button
