@@ -1,6 +1,10 @@
-const get = () => {
+const get = (device) => {
   const componentPage = figma.root.children.find(el => el.name === '_component');
-  const pageFrame = componentPage?.children.find(el => el.name === '_page');
+  let pageFrame = componentPage?.children.find(el => el.name === '_page');
+  console.log(device);
+  if(device === 'mo') {
+    pageFrame = componentPage?.children.find(el => el.name === '_page_mo');
+  }
   const page = figma.currentPage;
 
   if(componentPage === undefined) {
@@ -19,8 +23,8 @@ const get = () => {
   return {flag:'success', message:''};
 }
 
-export const addPage = (msg) => {
-  const { flag, message } = get();
+export const addPage = (msg, device) => {
+  const { flag, message } = get(device);
 		const res = {
 			action: 'addPage',
 			flag: flag,

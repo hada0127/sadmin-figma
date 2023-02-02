@@ -51,7 +51,6 @@ const draw = (rule) => {
     } else {
       //fixed width
       const width = selectedObject[0].width * obj / 12;
-      console.log(width);
       subFrame.resize(width, 30);
       subFrame.layoutGrow = 0;
     }

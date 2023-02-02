@@ -1,9 +1,9 @@
-const get = (name) => {
+const get = (data) => {
   const selectedObject = figma.currentPage.selection;
 
   const componentPage = figma.root.children.find(el => el.name === '_component');
   const pageFrame = componentPage?.children.find(el => el.name === '_component');
-  const baseComponent = pageFrame?.children.find(el => el.name === name);
+  const baseComponent = pageFrame?.children.find(el => el.name === 'table');
 
   if(selectedObject.length === 0){
     return {flag:'errSelect', message:'Please select object'};
@@ -18,22 +18,17 @@ const get = (name) => {
     return {flag:'errFrame', message:'Can not find _component frame'};
   } 
   else if(baseComponent === undefined) {
-    return {flag:'errComponent', message:'Can not find Component'};
+    return {flag:'errComponent', message:'Can not find Table Component'};
   }
-  let instance;
-  if(name === 'Button') {
-    instance = baseComponent.clone();
-  } else {
-    instance = baseComponent.createInstance();
-  }
+  const instance = baseComponent.clone();
   selectedObject[0].appendChild(instance);
   return {flag:'success', message:''};
 }
 
-export const addComponents = (msg, name) => {
-  const { flag, message } = get(name);
+export const addTable = (msg, data) => {
+  const { flag, message } = get(data);
   const res = {
-    action: 'addComponents',
+    action: 'addTable',
     flag: flag,
     message: message
   };

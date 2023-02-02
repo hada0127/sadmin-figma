@@ -5,11 +5,9 @@
   import Export from './pages/export.svelte';
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   import styles from './styles.scss';
-  /*
-  import SvgName from './image.svg';
-  {@html SvgName}
-  */
+  let nowTab = 0;
   let getCodeRes;
+  $: getCodeRes = nowTab === 2 ? '' : '';
   window.onmessage = async (event) => {
     const msg = event.data.pluginMessage;
     if (msg.flag === 'success') {
@@ -23,7 +21,7 @@
 </script>
 
 <div class="wrap">
-  <Tabs tabs={[{ name: 'WireFrame' }, { name: 'Description' }, { name: 'Export' }]}>
+  <Tabs bind:nowTab tabs={[{ name: 'WireFrame' }, { name: 'Description' }, { name: 'Export' }]}>
     <!-- WireFrame-->
     <div>
       <Wireframe />

@@ -1,9 +1,7 @@
 <script>
   import { onMount } from 'svelte';
   export let tabs = [];
-  export let inheritsClass = $$props.class ? $$props.class : '';
-
-  let nowTab = 0;
+  export let nowTab = 0;
 
   const setTabs = (selectTab) => {
     nowTab = selectTab;
@@ -27,7 +25,7 @@
 </script>
 
 <div id="tab" class="tabsgroup">
-  <div class="tabs is-small {inheritsClass}">
+  <div class="tabs is-small">
     <ul>
       {#each tabs as tab, i}
         <li class={i === nowTab ? 'is-active' : ''}>
