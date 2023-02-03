@@ -14,24 +14,35 @@
   const send = (message, data = null) => {
     parent.postMessage({ pluginMessage: { type: message, data } }, '*');
   };
-  let selectTableCheck = false;
-  let tableCols = 2;
-  let tableRows = 2;
-  let tableColGroup = [
+  export let detectTable = false;
+  export let selectTableCheck = false;
+  export let tableCols = 2;
+  export let tableRows = 2;
+  export let tableColGroup = [
     { value: 'fill', selected: 'fill' },
     { value: 'fill', selected: 'fill' }
   ];
   let oldTableColGroup = tableColGroup;
+  let tableInfo;
+  $: {
+    tableInfo = { col: tableCols, row: tableRows, colgroup: tableColGroup };
+    if (detectTable === true) {
+      setTableCols();
+      detectTable = false;
+      console.log('y');
+    } else {
+      console.log('x');
+    }
+  }
+
   const setTableCols = () => {
     oldTableColGroup = tableColGroup;
     tableColGroup = [];
-    //console.log(oldTableColGroup[1]);
     for (let i = 0; i < tableCols; i++) {
       let value = i < oldTableColGroup.length ? oldTableColGroup[i].value : 'fill';
       let selected = value !== 'fill' ? 'fixed' : 'fill';
       tableColGroup[i] = { value, selected: selected };
     }
-    //console.log('tableCols', tableColGroup);
   };
 </script>
 
@@ -104,23 +115,39 @@
     <dd class="table" class:is-visible={nowAccordion === 3}>
       <div>
         Cols <input
+          type="number"
           bind:value={tableCols}
           on:keyup={() => {
             setTableCols();
           }}
+          on:change={() => {
+            setTableCols();
+          }}
         />
-        X Rows <input bind:value={tableRows} />
+        X Rows <input type="number" bind:value={tableRows} />
         {#if selectTableCheck}
           <button
-            on:click={() =>
-              send('setTable', { col: tableCols, row: tableRows, colgroup: tableColGroup })}
-            >Set Table</button
+            on:click={() => {
+              if (tableCols < 2) {
+                alert('Cols must be bigger than 1.');
+              } else if (tableRows < 2) {
+                alert('Rows must be bigger than 1.');
+              } else {
+                send('setTable', tableInfo);
+              }
+            }}>Set Table</button
           >
         {:else}
           <button
-            on:click={() =>
-              send('addTable', { col: tableCols, row: tableRows, colgroup: tableColGroup })}
-            >Add Table</button
+            on:click={() => {
+              if (tableCols < 2) {
+                alert('Cols must be bigger than 1.');
+              } else if (tableRows < 2) {
+                alert('Rows must be bigger than 1.');
+              } else {
+                send('addTable', tableInfo);
+              }
+            }}>Add Table</button
           >
         {/if}
       </div>
@@ -138,7 +165,7 @@
               <option value="fixed">Fixed</option>
             </select>
             {#if item.selected !== 'fill'}
-              <input bind:value={item.value} />
+              <input type="number" bind:value={item.value} />
             {/if}
           </li>
         {/each}
@@ -190,7 +217,7 @@
     text-align: center;
   }
   .accordionsgroup > dl > dd.table input {
-    width: 45px;
+    width: 55px;
     padding: 5px 8px;
     border-radius: 5px;
     border: 1px solid #ccc;
