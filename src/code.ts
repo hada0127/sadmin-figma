@@ -5,6 +5,8 @@ import { getInfo } from './lib/util/wireframe/getInfo';
 import { addComponents } from './lib/util/wireframe/addComponents';
 import { addTable } from './lib/util/wireframe/addTable';
 import { getTable } from './lib/util/wireframe/getTable';
+import { setTable } from './lib/util/wireframe/setTable';
+import { addMarker } from './lib/util/description/addMarker';
 
 figma.showUI(__html__, {themeColors: true, width: 300, height: 400});
 
@@ -21,6 +23,10 @@ figma.ui.onmessage = msg => {
 		addComponents(msg, msg.data);
 	} else if(msg.type === 'addTable'){
 		addTable(msg, msg.data);
+	} else if(msg.type === 'setTable'){
+		setTable(msg, msg.data);
+	} else if(msg.type === 'addMarker'){
+		addMarker(msg, msg.data);
 	} else {
 		console.log(msg);
 	}

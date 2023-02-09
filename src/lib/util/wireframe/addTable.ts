@@ -1,4 +1,14 @@
-const setCol = (col, width = 'fill') => {
+export const setColWidth = (col, width = 'fill') => {
+  if(width === 'fill') {
+    //auto width
+    col.layoutGrow = 1;
+  } else {
+    //fixed width
+    col.resize(parseInt(width), col.height);
+    col.layoutGrow = 0;
+  }
+}
+export const setCol = (col, width = 'fill') => {
   if(width === 'fill') {
     //auto width
     col.layoutGrow = 1;
@@ -17,7 +27,7 @@ const setCol = (col, width = 'fill') => {
   col.counterAxisSizingMode = "FIXED";
   return col;
 }
-const createTable = (name: string) => {
+export const createTable = (name: string) => {
   const table = figma.createFrame();
   table.name = name;
   table.clipsContent = true;

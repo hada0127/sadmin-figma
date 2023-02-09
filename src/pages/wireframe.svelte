@@ -10,7 +10,7 @@
   import btn3_1 from '../lib/data/wireframe/btn3_1.svg';
   import btn1_3 from '../lib/data/wireframe/btn1_3.svg';
 
-  let nowAccordion = 3;
+  let nowAccordion = 0;
   const send = (message, data = null) => {
     parent.postMessage({ pluginMessage: { type: message, data } }, '*');
   };
@@ -26,13 +26,6 @@
   let tableInfo;
   $: {
     tableInfo = { col: tableCols, row: tableRows, colgroup: tableColGroup };
-    if (detectTable === true) {
-      setTableCols();
-      detectTable = false;
-      console.log('y');
-    } else {
-      console.log('x');
-    }
   }
 
   const setTableCols = () => {
@@ -172,37 +165,9 @@
       </ul>
     </dd>
   </dl>
-
-  <button on:click={() => send('getInfo')}>[Info]</button>
 </div>
 
 <style>
-  .accordionsgroup > dl > dh {
-    display: block;
-    width: 100%;
-  }
-  .accordionsgroup > dl > dh:not(:first-child) {
-    margin-top: 5px;
-  }
-  .accordionsgroup > dl > dh > button {
-    padding: 5px 10px;
-    width: 100%;
-    background-color: #efefef;
-    font-weight: 800;
-    text-align: left;
-  }
-  .accordionsgroup > dl > dd {
-    display: none;
-  }
-  .accordionsgroup > dl > dd.is-visible {
-    padding: 5px 0px;
-    display: block;
-  }
-  .accordionsgroup > dl > dd.is-visible > button {
-    display: inline;
-    line-height: 0.6;
-    margin-bottom: 10px;
-  }
   .accordionsgroup > dl > dd.is-visible > button.grid {
     width: 135px;
   }
@@ -225,7 +190,8 @@
   .accordionsgroup > dl > dd.table button {
     padding: 5px 8px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    background: #00d1b2;
+    color: #fff;
   }
   .accordionsgroup > dl > dd.table ul {
     margin: 10px 0;

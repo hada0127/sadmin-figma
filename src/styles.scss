@@ -51,6 +51,34 @@ div.wrap {
     > .is-visible {
       padding:40px 10px 20px 10px;
       display: block;  
+      .accordionsgroup > dl {
+        > dh {
+          display: block;
+          width: 100%;
+          > button {
+            padding: 5px 10px;
+            width: 100%;
+            background-color: #efefef;
+            font-weight: 800;
+            text-align: left;
+          }
+        }
+        > dh:not(:first-child) {
+          margin-top: 5px;
+        }
+        > dd {
+          display: none;
+        }
+        > dd.is-visible {
+          padding: 5px 0px;
+          display: block;
+          > button {
+            display: inline;
+            line-height: 0.6;
+            margin-bottom: 10px;
+          }    
+        }
+      }
     }    
 
 }

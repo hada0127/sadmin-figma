@@ -14,7 +14,7 @@
     });
   };
   onMount(() => {
-    setTabs(0);
+    setTabs(1);
     tabs.forEach(function (tab, i) {
       if (tab.checked === true) {
         nowTab = i;

@@ -19,6 +19,19 @@ const get = (node, depth = 0) => {
     childSearch = false;
   } else if(componentList.filter((el) => el.name === node.name)[0]?.exeType === 'tag') { //tag
     res = nl + `  `.repeat(depth) + `<${name}>`;
+    //table
+    if(name === 'table'
+    && node.children[0]?.name === 'thead'
+    && node.children[0]?.children[0]?.name === 'tr'
+    && node.children[0]?.children[0]?.children[0]?.name === 'th'  
+    ) {
+      res += `\n` + `  `.repeat(depth+1) + `<colgroup>`;
+      for(const col of node.children[0]?.children[0].children){
+        const width = col.layoutGrow === 0 ? col.width:'*';
+        res += `\n` + `  `.repeat(depth+2) + `<col width="${width}">`;
+      }
+      res += `\n` + `  `.repeat(depth+1) + `</colgroup>`;
+    }
     res_end += `\n`+ `  `.repeat(depth) + `</${name}>`;
   } else if(componentList.filter((el) => el.type === node.type)[0]?.exeType === 'component' || componentList.filter((el) => el.type === node.masterComponent?.type)[0]?.exeType === 'component') { //Component
     res = getComponent(node, depth);

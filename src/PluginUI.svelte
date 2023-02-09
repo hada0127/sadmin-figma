@@ -10,6 +10,8 @@
   let getCodeRes;
   let selectTableCheck = false;
   let tableCols, tableRows, tableColGroup;
+  let descriptionText;
+  $: descriptionText = nowTab === 1 ? '' : '';
   $: getCodeRes = nowTab === 2 ? '' : '';
   window.onmessage = async (event) => {
     const msg = event.data.pluginMessage;
@@ -20,7 +22,7 @@
         selectTableCheck = msg.data.selectTableCheck;
         tableCols = msg.data.tableCols;
         tableRows = msg.data.tableRows;
-        // tableColGroup = msg.data.tableColGroup;
+        tableColGroup = msg.data.tableColGroup;
         detectTable = true;
       }
     } else {
@@ -43,7 +45,7 @@
     </div>
     <!-- Description -->
     <div>
-      <Description />
+      <Description bind:descriptionText />
     </div>
     <!-- Export -->
     <div>
