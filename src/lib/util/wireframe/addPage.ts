@@ -17,7 +17,7 @@ const get = (device) => {
 
   if (page.children.length > 1) {
 		const lastChild = page.children.length - 2;
-		instance.x = page.children[lastChild].x + page.children[lastChild].width + 100;
+		instance.x = page.children[lastChild].x + page.children[lastChild].width + 1000;
 	}
 
   return {flag:'success', message:''};
