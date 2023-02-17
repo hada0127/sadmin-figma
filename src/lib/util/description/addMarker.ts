@@ -1,4 +1,6 @@
-const getFrameTop = (node , x=0, y=0) => {
+import { getMarker } from './getMarker';
+
+export const getFrameTop = (node , x=0, y=0) => {
   if(node.parent.type === 'PAGE'){
     return [
       node, 
@@ -17,20 +19,23 @@ const loadFonts = async () => {
   await figma.loadFontAsync({ family: "Inter", style: "Bold" });
 }
 
-const get = (data) => {
+const get =  async (data) => {
   const componentPage = figma.root.children.find(el => el.name === '_component');
   const pageFrame = componentPage?.children.find(el => el.name === '_markers');
   const marker = pageFrame?.children.find(el => el.name === 'marker');
+  const descriptionItem = pageFrame?.children.find(el => el.name === 'descriptionItem');
 
   const selectedObject = figma.currentPage.selection;
-  const id = selectedObject[0].id;
-  const [ node, x, y ] = getFrameTop(selectedObject[0]);
   
   if(selectedObject.length === 0){
-    return {flag:'errSelect', message:'Please select frame'};
+    return {flag:'errSelect', message:'Please select object'};
   }
-  else if(node.type !== 'FRAME') {
-    return {flag:'errFrame', message:'Please select frame'};
+
+  const id = selectedObject[0].id;
+  const [ node, x, y ] = getFrameTop(selectedObject[0]);
+
+  if(node.type !== 'FRAME') {
+    return {flag:'errFrame', message:'Please select frame or instance'};
   }
   else if(data.markerText.length < 1) {
     return {flag:'errText', message:'Please write Marker text'};
@@ -49,16 +54,16 @@ const get = (data) => {
   }
     
   //description 그룹 있는지 체크
-  let descriptionFrame = node.findChild(n => n.name=='description');
+  let descriptionFrame = node.findChild(el => el.name=='description');
   if(descriptionFrame === null){
     const tmp = figma.createFrame();
     tmp.name = 'description';
-    tmp.locked = true;
+    //tmp.locked = true;
     tmp.fills = [];
     tmp.resize(node.width, node.height);
     tmp.clipsContent = false;
     node.appendChild(tmp);
-    descriptionFrame = node.findChild(n => n.name=='description');
+    descriptionFrame = node.findChild(el => el.name=='description');
     if(node.layoutMode !== 'NONE'){
       descriptionFrame.layoutPositioning = "ABSOLUTE";
     }
@@ -66,7 +71,7 @@ const get = (data) => {
     descriptionFrame.y = 0;
   }
   //list 있는지 체크
-  let listFrame = descriptionFrame.findChild(n => n.name=='list');
+  let listFrame = descriptionFrame.findChild(el => el.name=='list');
   if(listFrame === null) {
     const tmp = figma.createFrame();
     tmp.name = 'list';
@@ -77,6 +82,7 @@ const get = (data) => {
     tmp.paddingBottom = 10;
     tmp.paddingLeft = 10;
     tmp.paddingRight = 10;
+    tmp.itemSpacing = 10;
     tmp.clipsContent = true;
     tmp.primaryAxisAlignItems = "MIN";
     tmp.layoutPositioning = "AUTO";
@@ -88,10 +94,10 @@ const get = (data) => {
     tmp.counterAxisSizingMode = "FIXED";
   
     descriptionFrame.appendChild(tmp);
-    listFrame = descriptionFrame.findChild(n => n.name=='list');
+    listFrame = descriptionFrame.findChild(el => el.name=='list');
   }
   //markers 있는지 체크
-  let markersFrame = descriptionFrame.findChild(n => n.name=='markers');
+  let markersFrame = descriptionFrame.findChild(el => el.name=='markers');
   if(markersFrame === null) {
     const tmp = figma.createFrame();
     tmp.name = 'markers';
@@ -100,7 +106,7 @@ const get = (data) => {
     tmp.clipsContent = false;
   
     descriptionFrame.appendChild(tmp);
-    markersFrame = descriptionFrame.findChild(n => n.name=='markers');
+    markersFrame = descriptionFrame.findChild(el => el.name=='markers');
   }
 
   //marker 있는지 체크
@@ -110,19 +116,41 @@ const get = (data) => {
     const tmp1 = marker.createInstance();
     tmp1.x = x - 20;
     tmp1.y = y - 20;
-    loadFonts().then(() => {
+
+    const tmp2 = descriptionItem.createInstance();
+
+    tmp1.setPluginData('id', id);
+    tmp2.setPluginData('id', id);
+    selectedObject[0].setPluginData('id', id);
+
+    await loadFonts().then(() => {
       tmp1.children[1].characters = data.markerText;
       markersFrame.appendChild(tmp1);
-      //새로 입력된 데이터 일단 저장
-      descriptionFrame.setPluginData(id, JSON.stringify(data));
-      console.log(id, x, y, data, checkMarker);
-      return {flag:'success', message:''};
+
+      tmp2.children[0].children[1].characters = data.markerText;
+      tmp2.children[1].characters = data.descriptionText;
+      listFrame.appendChild(tmp2);
+
     });
+  } else {
+    //이미 있으면
+    await loadFonts().then(() => {
+      markersFrame.children.find(el => el.getPluginData('id') === id).children[1].characters = data.markerText;
+
+      listFrame.children.find(el => el.getPluginData('id') === id).children[0].children[1].characters = data.markerText;
+      listFrame.children.find(el => el.getPluginData('id') === id).children[1].characters = data.descriptionText;
+    });    
   }
+  //새로 입력된 데이터 저장
+  await descriptionFrame.setPluginData(id, JSON.stringify(data));
+
+  getMarker();
+
+  return {flag:'success', message:''};
 }
 
-export const addMarker = (msg: any, data: any) => {
-  const { flag, message } = get(data);
+export const addMarker = async (msg: any, data: any) => {
+  const { flag, message } = await get(data);
   const res = {
     action: 'addMarker',
     flag: flag,

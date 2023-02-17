@@ -10,6 +10,8 @@
   let getCodeRes;
   let selectTableCheck = false;
   let tableCols, tableRows, tableColGroup;
+  let selectMarkerCheck = false;
+  let markerText;
   let descriptionText;
   $: descriptionText = nowTab === 1 ? '' : '';
   $: getCodeRes = nowTab === 2 ? '' : '';
@@ -18,6 +20,10 @@
     if (msg.flag === 'success') {
       if (msg.action === 'getCode') {
         getCodeRes = msg.data;
+      } else if (msg.action === 'getMarker') {
+        selectMarkerCheck = msg.data.selectMarkerCheck;
+        markerText = msg.data.markerText;
+        descriptionText = msg.data.descriptionText;
       } else if (msg.action === 'getTable') {
         selectTableCheck = msg.data.selectTableCheck;
         tableCols = msg.data.tableCols;
@@ -26,7 +32,8 @@
         detectTable = true;
       }
     } else {
-      alert(msg.message);
+      parent.postMessage({ pluginMessage: { type: 'error', message: msg.message } }, '*');
+      //alert(msg.message);
     }
   };
 </script>
@@ -45,7 +52,7 @@
     </div>
     <!-- Description -->
     <div>
-      <Description bind:descriptionText />
+      <Description bind:selectMarkerCheck bind:markerText bind:descriptionText />
     </div>
     <!-- Export -->
     <div>

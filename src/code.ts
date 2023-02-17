@@ -7,6 +7,9 @@ import { addTable } from './lib/util/wireframe/addTable';
 import { getTable } from './lib/util/wireframe/getTable';
 import { setTable } from './lib/util/wireframe/setTable';
 import { addMarker } from './lib/util/description/addMarker';
+import { getMarker } from './lib/util/description/getMarker';
+import { removeMarker } from './lib/util/description/removeMarker';
+import { detectDeleteMarker } from './lib/util/description/detectMarker';
 
 figma.showUI(__html__, {themeColors: true, width: 300, height: 400});
 
@@ -27,6 +30,13 @@ figma.ui.onmessage = msg => {
 		setTable(msg, msg.data);
 	} else if(msg.type === 'addMarker'){
 		addMarker(msg, msg.data);
+	} else if(msg.type === 'removeMarker'){
+		removeMarker(msg);
+	} else if(msg.type === 'error'){
+		figma.notify(msg.message, {
+			timeout: 3000,
+			error: true
+		});
 	} else {
 		console.log(msg);
 	}
@@ -34,4 +44,16 @@ figma.ui.onmessage = msg => {
 
 figma.on('selectionchange', ()=> {
 	getTable();
+	getMarker();
 })
+figma.on("documentchange", (event) => {
+	for (const change of event.documentChanges) {
+		switch (change.type) {
+			case "DELETE":
+				console.log(event.documentChanges);
+				console.log(event.documentChanges.find(el => el.node === "FrameNode"));
+				detectDeleteMarker();
+				break;
+			}
+		}
+	});

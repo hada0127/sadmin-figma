@@ -3,6 +3,7 @@
   const send = (message, data = null) => {
     parent.postMessage({ pluginMessage: { type: message, data } }, '*');
   };
+  export let selectMarkerCheck = false;
   export let markerText;
   export let descriptionText;
 </script>
@@ -22,9 +23,16 @@
         <textarea placeholder="Description Text" bind:value={descriptionText} />
       </div>
       <div>
-        <button on:click={() => send('addMarker', { markerText, descriptionText })}
-          >Add Marker</button
-        >
+        {#if selectMarkerCheck}
+          <button on:click={() => send('addMarker', { markerText, descriptionText })}
+            >Set Marker</button
+          >
+          <button on:click={() => send('removeMarker')} class="danger">Remove Marker</button>
+        {:else}
+          <button on:click={() => send('addMarker', { markerText, descriptionText })}
+            >Add Marker</button
+          >
+        {/if}
       </div>
     </dd>
     <dh>
@@ -61,5 +69,8 @@
     border-radius: 5px;
     background: #00d1b2;
     color: #fff;
+  }
+  .accordionsgroup > dl > dd.description button.danger {
+    background: #ff3860;
   }
 </style>
