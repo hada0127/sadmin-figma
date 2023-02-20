@@ -43,17 +43,23 @@ figma.ui.onmessage = msg => {
 };
 
 figma.on('selectionchange', ()=> {
-	getTable();
-	getMarker();
+	const lastSelection = figma.currentPage.selection[0];
+	const lastSelectionParent = figma.currentPage.selection[0]?.parent?.id;
+	if(lastSelection) {
+		getTable();
+		getMarker();
+	}
+	if(lastSelectionParent) {
+		figma.currentPage.setPluginData('sadmin-last-selection', lastSelectionParent);
+	}
 })
 figma.on("documentchange", (event) => {
 	for (const change of event.documentChanges) {
 		switch (change.type) {
 			case "DELETE":
-				console.log(event.documentChanges);
-				console.log(event.documentChanges.find(el => el.node === "FrameNode"));
-				detectDeleteMarker();
+				const lastSelection = figma.currentPage.getPluginData('sadmin-last-selection');
+				detectDeleteMarker(lastSelection);
 				break;
-			}
 		}
-	});
+	}
+});
