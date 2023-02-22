@@ -1,6 +1,6 @@
 export const getInfo = (msg) => {
   const selectedObject = figma.currentPage.selection;
-  console.log(selectedObject[0]);
+  console.log(selectedObject);
   const res = {
     action: 'getInfo',
     flag: 'success'

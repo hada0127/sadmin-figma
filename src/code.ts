@@ -1,11 +1,14 @@
 import { getCode } from './lib/util/export/getCode';
 import { addPage } from './lib/util/wireframe/addPage';
 import { drawGrid } from './lib/util/wireframe/drawGrid';
+import { drawBorderBox } from './lib/util/wireframe/drawBorderBox';
 import { getInfo } from './lib/util/wireframe/getInfo';
 import { addComponents } from './lib/util/wireframe/addComponents';
 import { addTable } from './lib/util/wireframe/addTable';
 import { getTable } from './lib/util/wireframe/getTable';
 import { setTable } from './lib/util/wireframe/setTable';
+import { removeTableColumn } from './lib/util/wireframe/removeTableColumn';
+import { changeTableOrder } from './lib/util/wireframe/changeTableOrder';
 import { addMarker } from './lib/util/description/addMarker';
 import { getMarker } from './lib/util/description/getMarker';
 import { removeMarker } from './lib/util/description/removeMarker';
@@ -20,6 +23,8 @@ figma.ui.onmessage = msg => {
 		addPage(msg, msg.data);
 	} else if(msg.type === 'drawGrid'){
 		drawGrid(msg, msg.data);
+	} else if(msg.type === 'drawBorderBox'){
+		drawBorderBox(msg);
 	} else if(msg.type === 'getInfo'){
 		getInfo(msg);
 	} else if(msg.type === 'addComponents'){
@@ -28,6 +33,10 @@ figma.ui.onmessage = msg => {
 		addTable(msg, msg.data);
 	} else if(msg.type === 'setTable'){
 		setTable(msg, msg.data);
+	} else if(msg.type === 'removeTableColumn'){
+		removeTableColumn(msg, msg.data);
+	} else if(msg.type === 'changeTableOrder'){
+		changeTableOrder(msg, msg.data);
 	} else if(msg.type === 'addMarker'){
 		addMarker(msg, msg.data);
 	} else if(msg.type === 'removeMarker'){
@@ -49,7 +58,10 @@ figma.on('selectionchange', ()=> {
 		getTable();
 		getMarker();
 	}
-	if(lastSelectionParent) {
+	if(lastSelection?.parent?.type === 'PAGE' || lastSelection === null){
+		figma.currentPage.setPluginData('sadmin-last-selection', '');
+	}
+	else if(lastSelectionParent) {
 		figma.currentPage.setPluginData('sadmin-last-selection', lastSelectionParent);
 	}
 })
@@ -57,8 +69,11 @@ figma.on("documentchange", (event) => {
 	for (const change of event.documentChanges) {
 		switch (change.type) {
 			case "DELETE":
-				const lastSelection = figma.currentPage.getPluginData('sadmin-last-selection');
-				detectDeleteMarker(lastSelection);
+				// eslint-disable-next-line no-case-declarations
+				const lastSelectionParent = figma.currentPage.getPluginData('sadmin-last-selection');
+				if(lastSelectionParent !== '' && lastSelectionParent !== null){
+					detectDeleteMarker(lastSelectionParent);
+				}
 				break;
 		}
 	}

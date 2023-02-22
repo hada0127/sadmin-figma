@@ -33,9 +33,9 @@ export const createTable = (name: string) => {
   table.clipsContent = true;
   table.primaryAxisAlignItems = "MIN";
   table.layoutPositioning = "AUTO";
-  table.layoutAlign = "STRETCH";
   table.counterAxisAlignItems = "MIN";
   if(name === 'tr') {
+    table.layoutAlign = "STRETCH";
     table.layoutMode = "HORIZONTAL";
     table.layoutGrow = 0;
     table.primaryAxisSizingMode = "FIXED";
@@ -46,6 +46,7 @@ export const createTable = (name: string) => {
     table.primaryAxisSizingMode = "AUTO";
     table.counterAxisSizingMode = "FIXED";
   } else {
+    table.layoutAlign = "STRETCH";
     table.layoutMode = "VERTICAL";
     table.layoutGrow = 0;
     table.primaryAxisSizingMode = "AUTO";
@@ -70,6 +71,9 @@ const get = (data: { row: number; col: number; colgroup: object; }) => {
   else if(selectedObject[0].type !== 'FRAME') {
     return {flag:'errFrame', message:'Please select frame'};
   }
+  else if(selectedObject[0].name === 'columns') {
+    return {flag:'errFrame', message:'Can\'t draw on columns'};
+  }  
   else if(componentPage === undefined) {
     return {flag:'errPage', message:'Can not find _component Page'};
   } 
@@ -105,8 +109,6 @@ const get = (data: { row: number; col: number; colgroup: object; }) => {
 
   table.appendChild(thead);
   table.appendChild(tbody);
-
-  
 
   selectedObject[0].appendChild(table);
   return {flag:'success', message:''};

@@ -11,6 +11,9 @@ const get = (name) => {
   else if(selectedObject[0].type !== 'FRAME') {
     return {flag:'errFrame', message:'Please select frame'};
   }
+  else if(selectedObject[0].name === 'columns') {
+    return {flag:'errFrame', message:'Can\'t draw on columns'};
+  }  
   else if(componentPage === undefined) {
     return {flag:'errPage', message:'Can not find _component Page'};
   } 

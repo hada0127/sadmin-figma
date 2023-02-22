@@ -26,6 +26,7 @@ const get = (node, depth = 0) => {
     && node.children[0]?.children[0]?.children[0]?.name === 'th'  
     ) {
       res += `\n` + `  `.repeat(depth+1) + `<colgroup>`;
+      // eslint-disable-next-line no-unsafe-optional-chaining
       for(const col of node.children[0]?.children[0].children){
         const width = col.layoutGrow === 0 ? col.width:'*';
         res += `\n` + `  `.repeat(depth+2) + `<col width="${width}">`;
@@ -36,18 +37,21 @@ const get = (node, depth = 0) => {
   } else if(componentList.filter((el) => el.type === node.type)[0]?.exeType === 'component' || componentList.filter((el) => el.type === node.masterComponent?.type)[0]?.exeType === 'component') { //Component
     res = getComponent(node, depth);
     childSearch = false;
-  } else {
+  } else if(name !== '_description') {
     res = nl + `  `.repeat(depth) + `<div class="${name}">`;
     res_end += `\n`+`  `.repeat(depth) + `</div>`;
+  } else {
+    childSearch = false;
   }
 
-  //text나 component가 아니면 하위 탐색
+  //text나 component, _description이 아니면 하위 탐색
   if(childSearch && node.children && node.children?.length > 0) {
     for(const child of node.children) {
       res += get(child, depth+1);
     }
   }
   res += res_end;
+
   
   return res;
 }

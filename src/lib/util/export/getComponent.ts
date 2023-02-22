@@ -181,7 +181,6 @@ export default function getComponent(node:any, depth:number) {
             res_component = `<${name}${prop} />`;
           } // Date
           else {
-            console.log(node.name, child.name, child);
             res_component = `<${name} />`;
           }
         } // vidible

@@ -18,7 +18,7 @@ export const getMarker = () => {
   if(selectedObject.length > 0){
     const [ node ] = getFrameTop(selectedObject[0]);
     if(node.type !== 'TEXT'){
-      const descriptionFrame = node?.findChild(el => el.name=='description');
+      const descriptionFrame = node?.findChild(el => el.name=='_description');
       if(selectedObject[0]?.getPluginDataKeys().includes('id')
         && descriptionFrame !== null
       ) { 

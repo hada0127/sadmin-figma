@@ -9,12 +9,14 @@
   import btn1_1_1_1 from '../lib/data/wireframe/btn1_1_1_1.svg';
   import btn3_1 from '../lib/data/wireframe/btn3_1.svg';
   import btn1_3 from '../lib/data/wireframe/btn1_3.svg';
+  import btnBorderBox from '../lib/data/wireframe/btnBorderBox.svg';
+  import btnRemove from '../lib/data/wireframe/btnRemove.svg';
+  import btnDrag from '../lib/data/wireframe/btnDrag.svg';
 
-  let nowAccordion = 0;
+  let nowAccordion = 1;
   const send = (message, data = null) => {
     parent.postMessage({ pluginMessage: { type: message, data } }, '*');
   };
-  export let detectTable = false;
   export let selectTableCheck = false;
   export let tableCols = 2;
   export let tableRows = 2;
@@ -37,6 +39,38 @@
       tableColGroup[i] = { value, selected: selected };
     }
   };
+
+  // 테이블 드래그 순서 변경
+  let hovering = null;
+  let dragFlag = false;
+  const drop = (event, target) => {
+    event.dataTransfer.dropEffect = 'move';
+    const start = parseInt(event.dataTransfer.getData('text/plain'));
+    const newTracklist = tableColGroup;
+
+    if (start < target) {
+      newTracklist.splice(target + 1, 0, newTracklist[start]);
+      newTracklist.splice(start, 1);
+    } else {
+      newTracklist.splice(target, 0, newTracklist[start]);
+      newTracklist.splice(start + 1, 1);
+    }
+    const sendData = {
+      start,
+      target
+    };
+    send('changeTableOrder', sendData);
+    tableColGroup = newTracklist;
+    hovering = null;
+    dragFlag = false;
+  };
+
+  const dragstart = (event, i) => {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.dropEffect = 'move';
+    const start = i;
+    event.dataTransfer.setData('text/plain', start);
+  };
 </script>
 
 <div id="accordion" class="accordionsgroup">
@@ -56,7 +90,7 @@
       <button
         on:click={() => {
           nowAccordion = 1;
-        }}>Grid</button
+        }}>Grid & Border Box</button
       >
     </dh>
     <dd class:is-visible={nowAccordion === 1}>
@@ -76,6 +110,9 @@
       <button class="grid" on:click={() => send('drawGrid', [9, 3])}>{@html btn3_1}<br />3:1</button
       >
       <button class="grid" on:click={() => send('drawGrid', [3, 9])}>{@html btn1_3}<br />1:3</button
+      >
+      <button class="grid" on:click={() => send('drawBorderBox')}
+        >{@html btnBorderBox}<br />Border Box</button
       >
     </dd>
     <dh>
@@ -97,6 +134,9 @@
       <button class="component" on:click={() => send('addComponents', 'File')}>File</button>
       <button class="component" on:click={() => send('addComponents', 'Button')}>Button</button>
       <button class="component" on:click={() => send('addComponents', 'Tabs')}>Tabs</button>
+      <button class="component" on:click={() => send('addComponents', 'img')}>Image</button>
+      <button class="component" on:click={() => send('addComponents', 'video')}>Video</button>
+      <button class="component" on:click={() => send('addComponents', 'Chart')}>Chart</button>
     </dd>
     <dh>
       <button
@@ -107,30 +147,35 @@
     </dh>
     <dd class="table" class:is-visible={nowAccordion === 3}>
       <div>
-        Cols <input
-          type="number"
-          bind:value={tableCols}
-          on:keyup={() => {
-            setTableCols();
-          }}
-          on:change={() => {
-            setTableCols();
-          }}
-        />
-        X Rows <input type="number" bind:value={tableRows} />
         {#if selectTableCheck}
           <button
             on:click={() => {
-              if (tableCols < 2) {
-                alert('Cols must be bigger than 1.');
-              } else if (tableRows < 2) {
-                alert('Rows must be bigger than 1.');
-              } else {
-                send('setTable', tableInfo);
-              }
-            }}>Set Table</button
+              tableCols = tableCols + 1;
+              setTableCols();
+              tableInfo = { col: tableCols, row: tableRows, colgroup: tableColGroup };
+              send('setTable', tableInfo);
+            }}>Add Column</button
+          >
+          <button
+            on:click={() => {
+              tableRows = tableRows + 1;
+              setTableCols();
+              tableInfo = { col: tableCols, row: tableRows, colgroup: tableColGroup };
+              send('setTable', tableInfo);
+            }}>Add Row</button
           >
         {:else}
+          Cols <input
+            type="number"
+            bind:value={tableCols}
+            on:keyup={() => {
+              setTableCols();
+            }}
+            on:change={() => {
+              setTableCols();
+            }}
+          />
+          X Rows <input type="number" bind:value={tableRows} />
           <button
             on:click={() => {
               if (tableCols < 2) {
@@ -146,19 +191,61 @@
       </div>
       <ul>
         {#each tableColGroup as item, i}
-          <li>
-            <span>Column {i + 1} Width</span>
+          <li
+            draggable={dragFlag}
+            on:dragstart={(event) => dragstart(event, i)}
+            on:drop|preventDefault={(event) => drop(event, i)}
+            ondragover="return false"
+            on:dragenter={() => (hovering = i)}
+            class="list-item"
+            class:is-active={hovering === i}
+          >
+            {#if selectTableCheck}
+              <button
+                on:mousedown={() => {
+                  dragFlag = true;
+                }}
+                class="drag"
+              >
+                {@html btnDrag}
+                <span>Column {i + 1}</span>
+              </button>
+            {:else}
+              <span>Column {i + 1}</span>
+            {/if}
             <select
               bind:value={item.selected}
               on:change={() => {
                 item.value = item.selected === 'fill' ? 'fill' : '';
+                if (item.value === 'fill') {
+                  send('setTable', tableInfo);
+                }
               }}
             >
               <option value="fill">Fill</option>
               <option value="fixed">Fixed</option>
             </select>
             {#if item.selected !== 'fill'}
-              <input type="number" bind:value={item.value} />
+              <input
+                type="number"
+                bind:value={item.value}
+                on:blur={() => {
+                  send('setTable', tableInfo);
+                }}
+                on:change={() => {
+                  send('setTable', tableInfo);
+                }}
+              />
+            {/if}
+            {#if selectTableCheck}
+              <button
+                on:click={() => {
+                  send('removeTableColumn', i);
+                }}
+                class="remove"
+              >
+                {@html btnRemove}
+              </button>
             {/if}
           </li>
         {/each}
@@ -200,8 +287,42 @@
     border: 1px solid #ccc;
   }
   .accordionsgroup > dl > dd.table ul > li {
+    position: relative;
     padding: 5px 0;
     display: block;
+  }
+  .accordionsgroup > dl > dd.table ul > li.is-active {
+    background-color: #3273dc;
+  }
+  .accordionsgroup > dl > dd.table ul > li > button.drag {
+    padding: 3px 8px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #ccc;
+  }
+  .accordionsgroup > dl > dd.table ul > li > button.drag:hover {
+    cursor: grab;
+  }
+  .accordionsgroup > dl > dd.table ul > li > button.drag:active {
+    cursor: grabbing;
+  }
+  .accordionsgroup > dl > dd.table ul > li > button.drag > :global(svg) {
+    display: inline-block;
+    vertical-align: middle;
+    width: auto;
+    height: 10px;
+  }
+
+  .accordionsgroup > dl > dd.table ul > li > button.remove {
+    position: absolute;
+    right: 0;
+    padding: 4px 8px;
+    background: #fff;
+    border: 1px solid #ff3860;
+  }
+  .accordionsgroup > dl > dd.table ul > li > button.remove > :global(svg) {
+    width: 14px;
+    height: auto;
   }
   .accordionsgroup > dl > dd.table ul > li > span {
     display: inline-block;

@@ -1,7 +1,6 @@
 const get = (device) => {
   const componentPage = figma.root.children.find(el => el.name === '_component');
   let pageFrame = componentPage?.children.find(el => el.name === '_page');
-  console.log(device);
   if(device === 'mo') {
     pageFrame = componentPage?.children.find(el => el.name === '_page_mo');
   }

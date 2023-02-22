@@ -10,19 +10,37 @@ const removeMarkerSet = (id, node, descriptionFrame) => {
 
   //원본 id 정보도 삭제
   node.findAll(el => el.getPluginData('id') === id)[0]?.setPluginData('id','');
-  descriptionFrame.setPluginData(id,'');
+  //descriptionFrame id 정보도 삭제
+  descriptionFrame.setPluginData(id, '');
+}
+
+const removeMarkerSetAll = (node) => {
+  const descriptionFrame = node.findChild(el => el.name === '_description');
+  if(descriptionFrame !== null){
+    descriptionFrame.remove();
+  }
+  
+  node.findAll(el => el.getPluginData('id') !== null)[0]?.setPluginData('id','');
 }
 
 export const detectDeleteMarker = (frameId) => {
   const selectedObject = figma.currentPage.findOne(el => el.id === frameId);
   const [ node ] = getFrameTop(selectedObject);
-  const descriptionFrame = node?.findChild(el => el.name=='description');
+  const descriptionFrame = node?.findChild(el => el.name=='_description');
   const checkProperties = descriptionFrame?.getPluginDataKeys();
+  if(descriptionFrame === null){
+    removeMarkerSetAll(node);
+    return;
+  }
 
   if(checkProperties.length > 0) {
     const original = descriptionFrame.getPluginDataKeys();
     const listFrame = descriptionFrame.findChild(el => el.name=='list');
     const markersFrame = descriptionFrame.findChild(el => el.name=='markers');
+    if(listFrame === null || markersFrame === null){
+      removeMarkerSetAll(node);
+      return;
+    }
     if(original.length !== listFrame.children.length || original.length !== markersFrame.children.length){
       if(original.length > listFrame.children.length) { //listFrame에 삭제 된거 있나 확인
         const list = listFrame.children.map(el => el.getPluginData('id'));

@@ -14,6 +14,10 @@ const draw = (rule) => {
   if(selectedObject[0].type !== 'FRAME') {
     return {flag:'errFrame', message:'Please select frame'};
   }
+  if(selectedObject[0].name === 'columns') {
+    return {flag:'errFrame', message:'Can\'t draw on columns'};
+  }
+
   let prevSize = rule[0];
   let sameSizeCheck = true;
   for(const obj of rule) {
@@ -31,11 +35,17 @@ const draw = (rule) => {
   frame.primaryAxisSizingMode = "FIXED";
   frame.primaryAxisAlignItems = "MIN";
   frame.layoutMode = "HORIZONTAL";
-  frame.layoutPositioning = "AUTO";
-  frame.layoutAlign = "STRETCH";
-  frame.layoutGrow = 0;
+  if(selectedObject[0].layoutMode === "VERTICAL"){
+    frame.layoutGrow = 0;
+    frame.layoutAlign = "STRETCH";
+  } else {
+    frame.layoutGrow = 1;
+    frame.layoutAlign = "INHERIT";
+  }
+  frame.primaryAxisAlignItems = "MIN";
+  frame.primaryAxisSizingMode = "FIXED";
   frame.counterAxisAlignItems = "MIN";
-  frame.counterAxisSizingMode = "AUTO";
+  frame.counterAxisSizingMode = "AUTO";  
   frame.itemSpacing = 10;
   frame.paddingTop = 10;
   frame.paddingBottom = 10;

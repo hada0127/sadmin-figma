@@ -15,7 +15,7 @@ const get = () => {
     return {flag:'errFrame', message:'Please select frame or instance'};
   }
     
-  const descriptionFrame = node.findChild(el => el.name=='description');
+  const descriptionFrame = node.findChild(el => el.name=='_description');
   const listFrame = descriptionFrame.findChild(el => el.name=='list');
   const markersFrame = descriptionFrame.findChild(el => el.name=='markers');
 

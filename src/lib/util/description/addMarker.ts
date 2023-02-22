@@ -54,16 +54,16 @@ const get =  async (data) => {
   }
     
   //description 그룹 있는지 체크
-  let descriptionFrame = node.findChild(el => el.name=='description');
+  let descriptionFrame = node.findChild(el => el.name=='_description');
   if(descriptionFrame === null){
     const tmp = figma.createFrame();
-    tmp.name = 'description';
+    tmp.name = '_description';
     //tmp.locked = true;
     tmp.fills = [];
     tmp.resize(node.width, node.height);
     tmp.clipsContent = false;
     node.appendChild(tmp);
-    descriptionFrame = node.findChild(el => el.name=='description');
+    descriptionFrame = node.findChild(el => el.name=='_description');
     if(node.layoutMode !== 'NONE'){
       descriptionFrame.layoutPositioning = "ABSOLUTE";
     }
