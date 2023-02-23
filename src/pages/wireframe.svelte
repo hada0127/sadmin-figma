@@ -13,7 +13,7 @@
   import btnRemove from '../lib/data/wireframe/btnRemove.svg';
   import btnDrag from '../lib/data/wireframe/btnDrag.svg';
 
-  let nowAccordion = 1;
+  let nowAccordion = 0;
   const send = (message, data = null) => {
     parent.postMessage({ pluginMessage: { type: message, data } }, '*');
   };

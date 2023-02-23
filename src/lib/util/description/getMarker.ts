@@ -2,10 +2,11 @@ import { getFrameTop } from './addMarker';
 
 /* eslint-disable no-unsafe-optional-chaining */
 export const getMarker = () => {
-  const data: { selectMarkerCheck: boolean, markerText: string | null, descriptionText: string | null} = {
+  const data: { selectMarkerCheck: boolean, markerText: string | null, descriptionText: string | null, markerColor: string | null} = {
     selectMarkerCheck: false,
     markerText: null,
-    descriptionText: null
+    descriptionText: null,
+    markerColor: null
   };
   let res = {
     action: 'getMarker',
@@ -40,6 +41,7 @@ export const getMarker = () => {
         data.selectMarkerCheck = true;
         data.markerText = tmp.markerText;
         data.descriptionText = tmp.descriptionText;
+        data.markerColor = tmp.markerColor;
         res = {
           action: 'getMarker',
           flag: 'success',

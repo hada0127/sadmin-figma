@@ -10,6 +10,9 @@ const draw = () => {
   if(selectedObject[0].name === 'columns') {
     return {flag:'errFrame', message:'Can\'t draw on columns'};
   }
+  if(selectedObject[0].name === 'is-bordered') {
+    return {flag:'errFrame', message:'Can\'t draw on is-bordered'};
+  }
 
   const frame = figma.createFrame();
   frame.name = 'is-bordered';

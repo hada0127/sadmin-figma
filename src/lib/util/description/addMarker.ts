@@ -58,7 +58,7 @@ const get =  async (data) => {
   if(descriptionFrame === null){
     const tmp = figma.createFrame();
     tmp.name = '_description';
-    //tmp.locked = true;
+    tmp.locked = true;
     tmp.fills = [];
     tmp.resize(node.width, node.height);
     tmp.clipsContent = false;
@@ -106,7 +106,20 @@ const get =  async (data) => {
     tmp.clipsContent = false;
   
     descriptionFrame.appendChild(tmp);
-    markersFrame = descriptionFrame.findChild(el => el.name=='markers');
+    markersFrame = descriptionFrame.findChild(el => el.name === 'markers');
+  }
+
+  let color = {r: 1, g: 0, b: 0};
+  switch (data.markerColor) {
+    case 'yellow':
+      color = {r: 0.9882, g: 0.7254, b: 0};
+      break;
+    case 'green':
+      color = {r: 0.2941, g: 0.7843, b: 0.4313};
+      break;
+    case 'blue':
+      color = {r: 0.2039, g: 0.5019, b: 0.8196};
+      break;
   }
 
   //marker 있는지 체크
@@ -117,8 +130,22 @@ const get =  async (data) => {
     tmp1.x = x - 20;
     tmp1.y = y - 20;
 
-    const tmp2 = descriptionItem.createInstance();
+    tmp1.children.find(el => el.type === 'ELLIPSE').fills = [{
+      type: "SOLID",
+      blendMode: "NORMAL",
+      opacity: 1,
+      visible: true,
+      color: color
+    }];
 
+    const tmp2 = descriptionItem.createInstance();
+    tmp2.children[0].children.find(el => el.type === 'ELLIPSE').fills = [{
+      type: "SOLID",
+      blendMode: "NORMAL",
+      opacity: 1,
+      visible: true,
+      color: color
+    }];
     tmp1.setPluginData('id', id);
     tmp2.setPluginData('id', id);
     selectedObject[0].setPluginData('id', id);
@@ -129,6 +156,7 @@ const get =  async (data) => {
 
       tmp2.children[0].children[1].characters = data.markerText;
       tmp2.children[1].characters = data.descriptionText;
+      console.log(tmp2);
       listFrame.appendChild(tmp2);
 
     });
@@ -136,8 +164,22 @@ const get =  async (data) => {
     //이미 있으면
     await loadFonts().then(() => {
       markersFrame.children.find(el => el.getPluginData('id') === id).children[1].characters = data.markerText;
+      markersFrame.children.find(el => el.getPluginData('id') === id).children[0].fills = [{
+        type: "SOLID",
+        blendMode: "NORMAL",
+        opacity: 1,
+        visible: true,
+        color: color
+      }];
 
       listFrame.children.find(el => el.getPluginData('id') === id).children[0].children[1].characters = data.markerText;
+      listFrame.children.find(el => el.getPluginData('id') === id).children[0].children[0].fills = [{
+        type: "SOLID",
+        blendMode: "NORMAL",
+        opacity: 1,
+        visible: true,
+        color: color
+      }];
       listFrame.children.find(el => el.getPluginData('id') === id).children[1].characters = data.descriptionText;
     });    
   }

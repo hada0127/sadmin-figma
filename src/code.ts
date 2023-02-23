@@ -14,7 +14,7 @@ import { getMarker } from './lib/util/description/getMarker';
 import { removeMarker } from './lib/util/description/removeMarker';
 import { detectDeleteMarker } from './lib/util/description/detectMarker';
 
-figma.showUI(__html__, {themeColors: true, width: 300, height: 400});
+figma.showUI(__html__, {themeColors: true, width: 320, height: 400});
 
 figma.ui.onmessage = msg => {
 	if (msg.type === 'getCode') {

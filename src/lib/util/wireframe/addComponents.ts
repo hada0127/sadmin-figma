@@ -14,6 +14,9 @@ const get = (name) => {
   else if(selectedObject[0].name === 'columns') {
     return {flag:'errFrame', message:'Can\'t draw on columns'};
   }  
+  else if(selectedObject[0].name === 'is-bordered') {
+    return {flag:'errFrame', message:'Can\'t draw on is-bordered'};
+  }
   else if(componentPage === undefined) {
     return {flag:'errPage', message:'Can not find _component Page'};
   } 

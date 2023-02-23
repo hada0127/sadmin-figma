@@ -13,6 +13,9 @@
   let selectMarkerCheck = false;
   let markerText;
   let descriptionText;
+  let markerColor;
+  $: markerText = nowTab === 1 ? '' : '';
+  $: markerColor = nowTab === 1 ? 'red' : 'red';
   $: descriptionText = nowTab === 1 ? '' : '';
   $: getCodeRes = nowTab === 2 ? '' : '';
   window.onmessage = async (event) => {
@@ -52,7 +55,7 @@
     </div>
     <!-- Description -->
     <div>
-      <Description bind:selectMarkerCheck bind:markerText bind:descriptionText />
+      <Description bind:selectMarkerCheck bind:markerText bind:descriptionText bind:markerColor />
     </div>
     <!-- Export -->
     <div>
