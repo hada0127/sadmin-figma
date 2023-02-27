@@ -133,6 +133,10 @@
       <button class="component" on:click={() => send('addComponents', 'Editor')}>Editor</button>
       <button class="component" on:click={() => send('addComponents', 'File')}>File</button>
       <button class="component" on:click={() => send('addComponents', 'Button')}>Button</button>
+      <button class="component" on:click={() => send('addComponents', 'Button')}>Button</button>
+      <button class="component" on:click={() => send('addComponents', 'Pagination')}
+        >Pagination</button
+      >
       <button class="component" on:click={() => send('addComponents', 'Tabs')}>Tabs</button>
       <button class="component" on:click={() => send('addComponents', 'img')}>Image</button>
       <button class="component" on:click={() => send('addComponents', 'video')}>Video</button>
@@ -252,6 +256,8 @@
       </ul>
     </dd>
   </dl>
+
+  <button on:click={() => send('getInfo')}>[Info]</button>
 </div>
 
 <style>

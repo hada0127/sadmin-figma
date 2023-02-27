@@ -73,8 +73,7 @@
         }}>Flow</button
       >
     </dh> -->
-    <!-- <dd class:is-visible={nowAccordion === 1} class="flow">flow</dd>
-    <button on:click={() => send('getInfo')}>[Info]</button> -->
+    <!-- <dd class:is-visible={nowAccordion === 1} class="flow">flow</dd> -->
   </dl>
 </div>
 

@@ -2,8 +2,14 @@
   import { onMount } from 'svelte';
   export let tabs = [];
   export let nowTab = 0;
-
+  const send = (message, data = null) => {
+    parent.postMessage({ pluginMessage: { type: message, data } }, '*');
+  };
   const setTabs = (selectTab) => {
+    send('getInfo');
+    send('getTable');
+    send('getMarker');
+
     nowTab = selectTab;
     document.querySelectorAll(`#tab > div:not(.tabs)`).forEach((el, i) => {
       if (i === selectTab) {

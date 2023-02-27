@@ -14,9 +14,7 @@
   let markerText;
   let descriptionText;
   let markerColor;
-  $: markerText = nowTab === 1 ? '' : '';
-  $: markerColor = nowTab === 1 ? 'red' : 'red';
-  $: descriptionText = nowTab === 1 ? '' : '';
+
   $: getCodeRes = nowTab === 2 ? '' : '';
   window.onmessage = async (event) => {
     const msg = event.data.pluginMessage;
@@ -27,6 +25,7 @@
         selectMarkerCheck = msg.data.selectMarkerCheck;
         markerText = msg.data.markerText;
         descriptionText = msg.data.descriptionText;
+        markerColor = msg.data.markerColor;
       } else if (msg.action === 'getTable') {
         selectTableCheck = msg.data.selectTableCheck;
         tableCols = msg.data.tableCols;

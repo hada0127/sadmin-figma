@@ -127,6 +127,7 @@ const get =  async (data) => {
   if(!checkMarker) {
     //없으면 양쪽에 추가
     const tmp1 = marker.createInstance();
+    tmp1.name = `marker - ${data.markerText}`;
     tmp1.x = x - 20;
     tmp1.y = y - 20;
 
@@ -139,6 +140,7 @@ const get =  async (data) => {
     }];
 
     const tmp2 = descriptionItem.createInstance();
+    tmp2.name = `descriptionItem - ${data.markerText}`;
     tmp2.children[0].children.find(el => el.type === 'ELLIPSE').fills = [{
       type: "SOLID",
       blendMode: "NORMAL",
@@ -156,7 +158,6 @@ const get =  async (data) => {
 
       tmp2.children[0].children[1].characters = data.markerText;
       tmp2.children[1].characters = data.descriptionText;
-      console.log(tmp2);
       listFrame.appendChild(tmp2);
 
     });

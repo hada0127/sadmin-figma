@@ -17,18 +17,18 @@ const draw = () => {
   const frame = figma.createFrame();
   frame.name = 'is-bordered';
   frame.clipsContent = true;
-  frame.layoutMode = "HORIZONTAL";
+  frame.layoutMode = "VERTICAL";
   if(selectedObject[0].layoutMode === "VERTICAL"){
     frame.layoutGrow = 0;
-    frame.layoutAlign = "STRETCH";
+    frame.primaryAxisSizingMode = "AUTO";
   } else {
     frame.layoutGrow = 1;
-    frame.layoutAlign = "INHERIT";
+    frame.primaryAxisSizingMode = "FIXED";
   }
+  frame.layoutAlign = "STRETCH";
   frame.primaryAxisAlignItems = "MIN";
-  frame.primaryAxisSizingMode = "FIXED";
   frame.counterAxisAlignItems = "MIN";
-  frame.counterAxisSizingMode = "AUTO";  
+  frame.counterAxisSizingMode = "FIXED";  
   frame.itemSpacing = 10;
   frame.paddingTop = 10;
   frame.paddingBottom = 10;
