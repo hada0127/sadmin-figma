@@ -257,7 +257,7 @@
     </dd>
   </dl>
 
-  <button on:click={() => send('getInfo')}>[Info]</button>
+  <!-- <button on:click={() => send('getInfo')}>[Info]</button> -->
 </div>
 
 <style>
