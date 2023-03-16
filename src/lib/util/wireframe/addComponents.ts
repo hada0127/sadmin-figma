@@ -27,7 +27,7 @@ const get = (name) => {
     return {flag:'errComponent', message:'Can not find Component'};
   }
   let instance;
-  if(name === 'Button') {
+  if(name === 'Button' || name === 'Field') {
     instance = baseComponent.clone();
   } else {
     instance = baseComponent.createInstance();

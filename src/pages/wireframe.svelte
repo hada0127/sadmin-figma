@@ -123,6 +123,7 @@
       >
     </dh>
     <dd class:is-visible={nowAccordion === 2}>
+      <button class="component" on:click={() => send('addComponents', 'Field')}>Field</button>
       <button class="component" on:click={() => send('addComponents', 'Input')}>Input</button>
       <button class="component" on:click={() => send('addComponents', 'Checkbox')}>Checkbox</button>
       <button class="component" on:click={() => send('addComponents', 'Radio')}>Radio</button>

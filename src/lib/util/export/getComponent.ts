@@ -55,6 +55,21 @@ export default function getComponent(node:any, depth:number) {
       prop = name === 'Tabs-is-boxed' ? ` class="is-boxed"`:'';
       res_component = `<Tabs tabs={${JSON.stringify(tabsArr)}}${prop} />`;
     } // Tabs
+    else if(name === 'Field') { // Field
+      let labelText = '';
+      let requiredText = '';
+      for(const child of node.children) {
+        if(child.name === 'Title') {
+          labelText = child.characters;
+        }
+        if(child.name === '*') {
+          requiredText = ' required';
+        }
+        
+      }
+      label = ` label="${labelText}"${requiredText}`;
+      res_component = `<Field ${label} />`;
+    } // Field
     else { // Components with Field 
       for(const child of node.children) {
         if(child.visible === true){

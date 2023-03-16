@@ -1,13 +1,13 @@
 import { componentList } from "../../data/componentList";
 import getComponent from "./getComponent";
 
-const get = (node, depth = 0) => {
+const get = (node, prefix, depth = 0) => {
   const nl = depth > 0 ? `\n`:``;
   let name = node.name;
 
   //행열 처리
   if(node.parent.name === 'columns') {
-    name = `column ${name}`;
+    name = `${prefix}column ${prefix}${name}`;
   }
   let res = '';
   let res_end = '';
@@ -47,7 +47,7 @@ const get = (node, depth = 0) => {
   //text나 component, _description이 아니면 하위 탐색
   if(childSearch && node.children && node.children?.length > 0) {
     for(const child of node.children) {
-      res += get(child, depth+1);
+      res += get(child, prefix, depth+1);
     }
   }
   res += res_end;
@@ -57,12 +57,13 @@ const get = (node, depth = 0) => {
 }
 
 export const getCode = (msg) => {
+  const prefix = msg.data;
   let data = '';
   let flag = 'fail';
   let message = 'Please select Object';
   if(figma.currentPage.selection.length > 0){
     for(const node of figma.currentPage.selection){
-      data += get(node);
+      data += get(node, prefix);
     }	
     flag = 'success';
     message = '';
