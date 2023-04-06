@@ -65,16 +65,16 @@ figma.on('selectionchange', ()=> {
 		figma.currentPage.setPluginData('sadmin-last-selection', lastSelectionParent);
 	}
 })
-figma.on("documentchange", (event) => {
-	for (const change of event.documentChanges) {
-		switch (change.type) {
-			case "DELETE":
-				// eslint-disable-next-line no-case-declarations
-				const lastSelectionParent = figma.currentPage.getPluginData('sadmin-last-selection');
-				if(lastSelectionParent !== '' && lastSelectionParent !== null){
-					detectDeleteMarker(lastSelectionParent);
-				}
-				break;
-		}
-	}
-});
+// figma.on("documentchange", (event) => {
+// 	for (const change of event.documentChanges) {
+// 		switch (change.type) {
+// 			case "DELETE":
+// 				// eslint-disable-next-line no-case-declarations
+// 				const lastSelectionParent = figma.currentPage.getPluginData('sadmin-last-selection');
+// 				if(lastSelectionParent !== '' && lastSelectionParent !== null){
+// 					detectDeleteMarker(lastSelectionParent);
+// 				}
+// 				break;
+// 		}
+// 	}
+// });

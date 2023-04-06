@@ -23,7 +23,7 @@ export const setCol = (col, width = 'fill') => {
   col.layoutMode = "HORIZONTAL";
   col.layoutPositioning = "AUTO";
   col.layoutAlign = "STRETCH";
-  col.counterAxisAlignItems = "MIN";
+  col.counterAxisAlignItems = "CENTER";
   col.counterAxisSizingMode = "FIXED";
   return col;
 }

@@ -1,7 +1,7 @@
 {
   "name": "sadmin",
   "id": "1210383539277701315",
-  "api": "1.0.0",
+  "api": "5.0.0",
   "main": "code.js",
   "editorType": ["figma"],
   "ui": "index.html"
